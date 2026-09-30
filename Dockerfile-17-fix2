@@ -1,0 +1,25 @@
+FROM ghcr.io/cloudnative-pg/postgresql:17.10-202605180839-system-bookworm AS build
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    git \
+    postgresql-server-dev-17
+
+RUN git clone https://github.com/playments-admin/pg_ivm.git /usr/src/pg_ivm --branch delta-null-keys-matching-condition
+
+WORKDIR /usr/src/pg_ivm
+
+RUN make && make install
+
+FROM ghcr.io/cloudnative-pg/postgresql:17.10-202605180839-system-bookworm
+
+USER root
+
+COPY --from=build /usr/lib/postgresql/17/lib/pg_ivm.so /usr/lib/postgresql/17/lib/
+COPY --from=build /usr/share/postgresql/17/extension/pg_ivm.control /usr/share/postgresql/17/extension/
+COPY --from=build /usr/share/postgresql/17/extension/pg_ivm--*.sql /usr/share/postgresql/17/extension/
+
+USER 26

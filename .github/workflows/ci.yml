@@ -17,15 +17,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push 16
-        uses: docker/build-push-action@v6
-        with:
-          platforms: linux/amd64,linux/arm64/v8
-          file: Dockerfile-16
-          push: true
-          tags: playmentsadmin/postgres-cloudnativepg-ivm:16.10-pg_ivm1.10
-
-      -
         name: Build and push PG 17
         uses: docker/build-push-action@v6
         with:
@@ -39,9 +30,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64/v8
-          file: Dockerfile-17-fix
+          file: Dockerfile-17-fix2
           push: true
-          tags: playmentsadmin/postgres-cloudnativepg-ivm:17.10-pg_ivm1.16-perf-fix
+          tags: playmentsadmin/postgres-cloudnativepg-ivm:17.10-pg_ivm1.16-perf-fix2
 
 
       -
@@ -58,6 +49,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64/v8
-          file: Dockerfile-18-fix
+          file: Dockerfile-18-fix2
           push: true
-          tags: playmentsadmin/postgres-cloudnativepg-ivm:18.6-pg_ivm1.16-perf-fix
+          tags: playmentsadmin/postgres-cloudnativepg-ivm:18.6-pg_ivm1.16-perf-fix2

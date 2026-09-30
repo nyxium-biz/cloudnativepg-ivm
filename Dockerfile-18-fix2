@@ -1,0 +1,25 @@
+FROM ghcr.io/cloudnative-pg/postgresql:18.6-202608310817-system-bookworm AS build
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    git \
+    postgresql-server-dev-18
+
+RUN git clone https://github.com/playments-admin/pg_ivm.git /usr/src/pg_ivm --branch delta-null-keys-matching-condition
+
+WORKDIR /usr/src/pg_ivm
+
+RUN make && make install
+
+FROM ghcr.io/cloudnative-pg/postgresql:18.6-202608310817-system-bookworm
+
+USER root
+
+COPY --from=build /usr/lib/postgresql/18/lib/pg_ivm.so /usr/lib/postgresql/18/lib/
+COPY --from=build /usr/share/postgresql/18/extension/pg_ivm.control /usr/share/postgresql/18/extension/
+COPY --from=build /usr/share/postgresql/18/extension/pg_ivm--*.sql /usr/share/postgresql/18/extension/
+
+USER 26
